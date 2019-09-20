@@ -44,7 +44,8 @@ class RandomSurvivalForest:
             self.n_jobs = multiprocessing.cpu_count()
         elif self.n_jobs is None:
             self.n_jobs = 1
-        self.random_states = np.random.RandomState(seed=self.random_state).randint(0, 2**32-1, self.n_estimators)
+            #rz: change 32 to 31 so it won't cause high out of bounds error in python32
+        self.random_states = np.random.RandomState(seed=self.random_state).randint(0, 2**31-1, self.n_estimators)
         self.bootstrap_idxs = self.draw_bootstrap_samples(x)
 
         trees = Parallel(n_jobs=self.n_jobs)(delayed(self.create_tree)(x, y, i) for i in range(self.n_estimators))
